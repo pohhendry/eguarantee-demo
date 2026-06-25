@@ -94,10 +94,10 @@ function updateEnv(subdomain: string): void {
   }
 
   const linesToAdd: string[] = [];
-  if (!existing.includes('DID_WEB=')) {
+  if (!/^DID_WEB=/m.test(existing)) {
     linesToAdd.push(`DID_WEB=${didWeb}`);
   }
-  if (!existing.includes('VITE_DID_WEB=')) {
+  if (!/^VITE_DID_WEB=/m.test(existing)) {
     linesToAdd.push(`VITE_DID_WEB=${didWeb}`);
   }
 
@@ -107,9 +107,10 @@ function updateEnv(subdomain: string): void {
   }
 }
 
-/** Writes .env.example (always overwrite) */
+/** Writes .env.example (skip if already exists) */
 function writeEnvExample(): void {
   const envExamplePath = join(process.cwd(), '.env.example');
+  if (existsSync(envExamplePath)) return; // already committed, don't overwrite
   const content = `DID_WEB=\nVITE_DID_WEB=\nPORT=3001\nPRIVATE_KEY=\n`;
   writeFileSync(envExamplePath, content);
 }
