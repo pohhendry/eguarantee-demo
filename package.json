@@ -6,7 +6,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev": "concurrently \"vite\" \"tsx watch server/index.ts\"",
+    "dev": "concurrently \"vite\" \"node --watch --import tsx/esm server/index.ts\"",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",

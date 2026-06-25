@@ -9,6 +9,7 @@ export function assembleVC(
     '@context': [
       'https://www.w3.org/ns/credentials/v2',
       'https://trustvc.io/context/render-method-context-v2.json',
+      { '@vocab': 'https://eguarantee.fyntech.io/vocab#' },
     ],
     type: ['VerifiableCredential'],
     issuer: issuerDid,

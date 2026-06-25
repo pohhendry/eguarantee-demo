@@ -26,6 +26,12 @@ describe('assembleVC', () => {
     expect(vc['@context']).toContain('https://www.w3.org/ns/credentials/v2');
   });
 
+  it('includes @vocab in context for JSON-LD safe mode', () => {
+    const vc = assembleVC(data, ISSUER);
+    const vocab = vc['@context'].find((c: unknown) => typeof c === 'object' && (c as Record<string, string>)['@vocab']);
+    expect(vocab).toBeDefined();
+  });
+
   it('sets type to VerifiableCredential', () => {
     const vc = assembleVC(data, ISSUER);
     expect(vc.type).toContain('VerifiableCredential');

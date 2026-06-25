@@ -10,7 +10,7 @@ app.use('/api/vc', vcRouter);
 
 const PORT = process.env.PORT ?? 3001;
 
-if (require.main === module) {
+if (process.argv[1]?.endsWith('server/index.ts') || process.argv[1]?.endsWith('server/index.js')) {
   app.listen(PORT, () => console.log(`Server running on :${PORT}`));
 }
 
