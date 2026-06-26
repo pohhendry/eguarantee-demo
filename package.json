@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "concurrently \"vite\" \"node --watch --import tsx/esm server/index.ts\"",
     "build": "tsc && vite build",
+    "build:server": "tsc -p server/tsconfig.json",
+    "start": "node dist/server/index.js",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

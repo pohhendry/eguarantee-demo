@@ -5,9 +5,10 @@
     "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "outDir": "dist/server",
+    "outDir": "../dist/server",
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["server/**/*", "scripts/**/*"]
+  "include": ["./**/*"],
+  "exclude": ["./**/*.test.ts"]
 }

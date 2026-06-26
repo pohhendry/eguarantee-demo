@@ -23,13 +23,23 @@ let cachedKeypair: KeyPair | null = null;
 
 export function loadKeypair(): KeyPair {
   if (cachedKeypair) return cachedKeypair;
+  // Cloud deployment: private key passed as env var (JSON string)
+  const envKey = process.env.PRIVATE_KEY_JSON;
+  if (envKey) {
+    try {
+      cachedKeypair = JSON.parse(envKey) as KeyPair;
+      return cachedKeypair;
+    } catch {
+      throw new Error('PRIVATE_KEY_JSON env var is not valid JSON');
+    }
+  }
   try {
     const raw = readFileSync(KEYPAIR_PATH, 'utf-8');
     cachedKeypair = JSON.parse(raw) as KeyPair;
     return cachedKeypair;
   } catch {
     throw new Error(
-      'keys/keypair.json not found. Run "npm run setup" to generate the signing identity.'
+      'keys/keypair.json not found. Run "npm run setup" or set PRIVATE_KEY_JSON env var.'
     );
   }
 }

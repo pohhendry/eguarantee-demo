@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: eguarantee-demo
+    runtime: node
+    buildCommand: npm ci && npm run build && npm run build:server
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_DID_WEB
+        value: did:web:eguarantee.hendrypoh.com
+      - key: VITE_RENDERER_URL
+        value: https://eguarantee.hendrypoh.com/renderer
+      - key: DID_WEB
+        value: did:web:eguarantee.hendrypoh.com
+      - key: PRIVATE_KEY_JSON
+        sync: false

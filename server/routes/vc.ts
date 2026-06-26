@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from 'express';
-import { signVC, loadKeypair } from '../services/signVC';
+import { signVC, loadKeypair } from '../services/signVC.js';
 
 const router = Router();
 
