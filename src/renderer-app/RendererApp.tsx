@@ -34,8 +34,8 @@ export default function RendererApp() {
     };
 
     window.addEventListener('message', handleMessage);
-    // Signal readiness — parent will re-send RENDER_DOCUMENT after this
-    postToParent('RENDERER_READY', {});
+    // TrustVC/TradeTrust handshake — parent re-sends RENDER_DOCUMENT after this
+    postToParent('IFRAME_CONNECTED', {});
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
