@@ -34,7 +34,8 @@ export default function RendererApp() {
     };
 
     window.addEventListener('message', handleMessage);
-    reportHeight();
+    // Signal readiness — parent will re-send RENDER_DOCUMENT after this
+    postToParent('RENDERER_READY', {});
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
