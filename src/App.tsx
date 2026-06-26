@@ -47,11 +47,11 @@ export default function App() {
   }
 
   function downloadSignedVC(signedVC: object) {
-    const blob = new Blob([JSON.stringify(signedVC, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(signedVC, null, 2)], { type: 'application/octet-stream' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'signed_vc.json';
+    a.download = 'bankers_guarantee.tt';
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -105,13 +105,13 @@ export default function App() {
                 <div className="mt-4 flex items-center justify-between rounded-lg bg-green-50 border border-green-200 px-4 py-3">
                   <div>
                     <p className="text-sm font-semibold text-green-700">✓ Signed VC ready</p>
-                    <p className="text-xs text-green-600">Drag signed_vc.json onto trustvc.io to verify</p>
+                    <p className="text-xs text-green-600">Drag bankers_guarantee.tt onto trustvc.io to verify</p>
                   </div>
                   <button
                     onClick={() => downloadSignedVC((appState as { phase: 'signed'; signedVC: object }).signedVC)}
                     className="rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700"
                   >
-                    Download signed_vc.json
+                    Download bankers_guarantee.tt
                   </button>
                 </div>
               )}
