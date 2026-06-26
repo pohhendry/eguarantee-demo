@@ -17,7 +17,7 @@ app.use('/api/vc', vcRouter);
 const distPath = join(__dirname, '..', '..', 'dist');
 if (existsSync(distPath)) {
   app.use(express.static(distPath));
-  app.get('*', (_req, res) => res.sendFile(join(distPath, 'index.html')));
+  app.get('/*path', (_req, res) => res.sendFile(join(distPath, 'index.html')));
 }
 
 const PORT = process.env.PORT ?? 3001;
