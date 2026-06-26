@@ -26,6 +26,7 @@ jobs:
       - run: npm run build
         env:
           VITE_DID_WEB: did:web:eguarantee.hendrypoh.com
+          VITE_RENDERER_URL: https://eguarantee.hendrypoh.com/renderer
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

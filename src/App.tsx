@@ -6,7 +6,7 @@ import { assembleVC } from './vc/assembleVC';
 import type { GuaranteeFormData } from './form/schema';
 
 const ISSUER_DID = import.meta.env.VITE_DID_WEB ?? '';
-const RENDERER_URL = import.meta.env.VITE_RENDERER_URL ?? 'https://eguarantee.fyntech.io/renderer';
+const RENDERER_URL = import.meta.env.VITE_RENDERER_URL ?? 'https://eguarantee.hendrypoh.com/renderer';
 
 type AppState =
   | { phase: 'idle' }

@@ -3,13 +3,13 @@ import type { GuaranteeFormData } from '../form/schema';
 export function assembleVC(
   data: GuaranteeFormData,
   issuerDid: string,
-  rendererUrl: string = 'https://eguarantee.fyntech.io/renderer',
+  rendererUrl: string = 'https://eguarantee.hendrypoh.com/renderer',
 ) {
   return {
     '@context': [
       'https://www.w3.org/ns/credentials/v2',
       'https://trustvc.io/context/render-method-context-v2.json',
-      { '@vocab': 'https://eguarantee.fyntech.io/vocab#' },
+      { '@vocab': 'https://eguarantee.hendrypoh.com/vocab#' },
     ],
     type: ['VerifiableCredential'],
     issuer: issuerDid,
