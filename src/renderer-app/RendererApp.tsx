@@ -1,52 +1,58 @@
 import { useEffect, useRef, useState } from 'react';
+import { connectToParent } from 'penpal';
 import GuaranteePreview from '../renderer/GuaranteePreview';
 
 type CredentialSubject = Parameters<typeof GuaranteePreview>[0]['subject'];
 
-const TEMPLATES = [{ id: 'EBG', label: "Banker's Guarantee" }];
-
-function postToParent(type: string, payload: unknown) {
-  window.parent.postMessage({ type, payload }, '*');
-}
+const TEMPLATES = [{ id: 'EBG', label: "Banker's Guarantee", type: 'custom' }];
+const noop = () => {};
 
 export default function RendererApp() {
   const [subject, setSubject] = useState<CredentialSubject | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const reportHeight = () => {
-    postToParent('DOCUMENT_RENDERED', containerRef.current?.scrollHeight ?? 0);
-  };
+  const dispatchToHost = useRef<(action: object) => void>(noop);
 
   useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      const { type, payload } = (event.data ?? {}) as { type: string; payload: unknown };
+    const connection = connectToParent<{ dispatch: (action: object) => Promise<void> }>({
+      methods: {
+        dispatch(action: { type: string; payload: any }) {
+          if (action.type === 'RENDER_DOCUMENT') {
+            const doc = action.payload?.document ?? action.payload;
+            setSubject(doc?.credentialSubject ?? null);
+            dispatchToHost.current({ type: 'UPDATE_TEMPLATES', payload: TEMPLATES });
+          } else if (action.type === 'GET_TEMPLATES') {
+            dispatchToHost.current({ type: 'UPDATE_TEMPLATES', payload: TEMPLATES });
+            return TEMPLATES;
+          } else if (action.type === 'SELECT_TEMPLATE') {
+            // single template, nothing to do
+          } else if (action.type === 'PRINT') {
+            window.print();
+          }
+        },
+      },
+      timeout: 30000,
+    });
 
-      if (type === 'RENDER_DOCUMENT') {
-        const doc = (payload as { document?: { credentialSubject: CredentialSubject } })?.document
-          ?? (payload as { credentialSubject: CredentialSubject });
-        setSubject((doc as { credentialSubject: CredentialSubject })?.credentialSubject ?? null);
-      } else if (type === 'GET_TEMPLATES') {
-        postToParent('TEMPLATES_UPDATED', TEMPLATES);
-      } else if (type === 'PRINT') {
-        window.print();
-        postToParent('PRINT_COMPLETION', true);
-      }
-    };
+    connection.promise.then((parent) => {
+      dispatchToHost.current = (action) => parent.dispatch(action);
+    });
 
-    window.addEventListener('message', handleMessage);
-    // TrustVC/TradeTrust handshake — parent re-sends RENDER_DOCUMENT after this
-    postToParent('IFRAME_CONNECTED', {});
-    return () => window.removeEventListener('message', handleMessage);
+    return () => connection.destroy();
   }, []);
 
   useEffect(() => {
-    if (subject) requestAnimationFrame(reportHeight);
+    if (!subject || !containerRef.current) return;
+    requestAnimationFrame(() => {
+      if (containerRef.current) {
+        dispatchToHost.current({ type: 'UPDATE_HEIGHT', payload: containerRef.current.scrollHeight });
+      }
+    });
   }, [subject]);
 
   if (!subject) return null;
 
   return (
-    <div ref={containerRef} className="p-4">
+    <div ref={containerRef}>
       <GuaranteePreview subject={subject} />
     </div>
   );

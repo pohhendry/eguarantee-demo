@@ -23,6 +23,7 @@
     "@trustvc/w3c-issuer": "^2.2.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "penpal": "^5.3.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-hook-form": "^7.80.0",
