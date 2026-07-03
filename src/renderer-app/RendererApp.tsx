@@ -9,6 +9,7 @@ const noop = () => {};
 
 export default function RendererApp() {
   const [subject, setSubject] = useState<CredentialSubject | null>(null);
+  const [issuerDid, setIssuerDid] = useState<string | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
   const dispatchToHost = useRef<(action: object) => void>(noop);
 
@@ -19,6 +20,8 @@ export default function RendererApp() {
           if (action.type === 'RENDER_DOCUMENT') {
             const doc = action.payload?.document ?? action.payload;
             setSubject(doc?.credentialSubject ?? null);
+            const issuer = doc?.issuer;
+            setIssuerDid(typeof issuer === 'string' ? issuer : issuer?.id);
             dispatchToHost.current({ type: 'UPDATE_TEMPLATES', payload: TEMPLATES });
           } else if (action.type === 'GET_TEMPLATES') {
             dispatchToHost.current({ type: 'UPDATE_TEMPLATES', payload: TEMPLATES });
@@ -53,7 +56,7 @@ export default function RendererApp() {
 
   return (
     <div ref={containerRef}>
-      <GuaranteePreview subject={subject} />
+      <GuaranteePreview subject={subject} issuerDid={issuerDid} />
     </div>
   );
 }
