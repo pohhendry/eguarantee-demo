@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import GuaranteeForm from './form/GuaranteeForm';
 import GuaranteePreview from './renderer/GuaranteePreview';
 import VcJsonViewer from './renderer/VcJsonViewer';
@@ -18,11 +18,11 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [liveVC, setLiveVC] = useState<ReturnType<typeof assembleVC> | null>(null);
 
-  function handleValidChange(isValid: boolean, data: GuaranteeFormData) {
+  const handleValidChange = useCallback((isValid: boolean, data: GuaranteeFormData) => {
     if (isValid) {
       setLiveVC(assembleVC(data, ISSUER_DID || 'did:web:pending-setup', RENDERER_URL));
     }
-  }
+  }, []);
 
   async function handleSubmit(data: GuaranteeFormData) {
     setError(null);

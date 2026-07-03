@@ -157,6 +157,7 @@ export default function GuaranteePreview({ subject, issuerDid }: Props) {
             <div className="border-t border-black pt-2">
               <p className="font-semibold">{subject.signatory.name}</p>
               <p>{subject.signatory.title}</p>
+              <p>{subject.bank.name}</p>
             </div>
           </div>
           <div className="border border-black p-4">

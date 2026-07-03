@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { guaranteeSchema, type GuaranteeFormData } from './schema';
 import { sampleInput } from '../sample/sampleInput';
@@ -19,18 +19,18 @@ export default function GuaranteeForm({ onSubmit, onValidChange, isSubmitting }:
     register,
     handleSubmit,
     reset,
-    watch,
+    control,
     formState: { errors, isValid },
   } = useForm<GuaranteeFormData>({
     resolver: zodResolver(guaranteeSchema),
     mode: 'onChange',
   });
 
-  const formValues = watch();
+  const formValues = useWatch({ control });
 
   useEffect(() => {
-    onValidChange(isValid, formValues);
-  }, [isValid, JSON.stringify(formValues)]);
+    onValidChange(isValid, formValues as GuaranteeFormData);
+  }, [isValid, formValues, onValidChange]);
 
   function fillSample() {
     reset(sampleInput);

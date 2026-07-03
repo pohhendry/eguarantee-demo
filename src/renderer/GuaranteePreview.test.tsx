@@ -37,7 +37,8 @@ describe('GuaranteePreview', () => {
 
   it('renders bank name and registration number in clause 1', () => {
     render(<GuaranteePreview subject={subject} />);
-    expect(screen.getByText(/United Overseas Bank Limited/)).toBeInTheDocument();
+    const bankNameMatches = screen.getAllByText(/United Overseas Bank Limited/);
+    expect(bankNameMatches.length).toBeGreaterThan(0);
     expect(screen.getByText(/193500026Z/)).toBeInTheDocument();
   });
 
