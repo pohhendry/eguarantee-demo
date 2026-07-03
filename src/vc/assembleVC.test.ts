@@ -3,88 +3,81 @@ import { assembleVC } from './assembleVC';
 import type { GuaranteeFormData } from '../form/schema';
 
 const data: GuaranteeFormData = {
-  bgNumber: 'BG-2026-88910',
-  issueDate: '2026-06-24',
-  expiryDate: '2027-06-30',
-  issuingBankName: 'Global Trade Bank Ltd',
-  issuingBankSwift: 'GTBKSGSGXXX',
-  applicantName: 'Apex Builders Pte Ltd',
-  applicantAddress: '10 Marina Boulevard, Singapore 018983',
-  beneficiaryName: 'Maritime Authority of Singapore',
-  beneficiaryAddress: '456 Alexandra Road, Singapore 119962',
-  underlyingContract: 'Tender Ref: MAS-2026-004',
-  currency: 'SGD',
-  amount: 500000,
-  placeOfPresentation: 'Singapore Counter, 12 Marina Blvd',
+  guaranteeNumber: 'BG-UOB-2026-00123',
+  issuanceDate: '2026-07-03',
+  agreementDate: '2026-05-15',
+  effectiveDate: '2026-07-03',
+  expiryDate: '2027-07-02',
+  applicant: { name: 'Tan Chong Construction Pte Ltd', address: '10 Tuas South Street 2, Singapore 637542' },
+  beneficiary: { name: 'Housing & Development Board', address: 'HDB Hub, 480 Lorong 6 Toa Payoh, Singapore 310480' },
+  bank: { name: 'United Overseas Bank Limited', registrationNumber: '193500026Z', address: '80 Raffles Place, UOB Plaza, Singapore 048624' },
+  contractNature: 'construction services',
+  guaranteedSum: { currency: 'SGD', figures: 750000, words: 'Seven Hundred and Fifty Thousand' },
+  signatory: { name: 'Alexandra Teo', title: 'Vice President, Trade Finance Operations' },
 };
 
-const ISSUER = 'did:web:eguarantee.fyntech.io';
+const ISSUER = 'did:web:eguarantee.hendrypoh.com';
 
 describe('assembleVC', () => {
   it('includes the W3C VC DM 2.0 context', () => {
-    const vc = assembleVC(data, ISSUER);
-    expect(vc['@context']).toContain('https://www.w3.org/ns/credentials/v2');
+    expect(assembleVC(data, ISSUER)['@context']).toContain('https://www.w3.org/ns/credentials/v2');
   });
 
-  it('includes @vocab in context for JSON-LD safe mode', () => {
-    const vc = assembleVC(data, ISSUER);
-    const vocab = vc['@context'].find((c: unknown) => typeof c === 'object' && (c as Record<string, string>)['@vocab']);
+  it('includes @vocab in context', () => {
+    const vocab = assembleVC(data, ISSUER)['@context'].find(
+      (c: unknown) => typeof c === 'object' && (c as Record<string, string>)['@vocab'],
+    );
     expect(vocab).toBeDefined();
   });
 
   it('sets type to VerifiableCredential', () => {
-    const vc = assembleVC(data, ISSUER);
-    expect(vc.type).toContain('VerifiableCredential');
+    expect(assembleVC(data, ISSUER).type).toContain('VerifiableCredential');
   });
 
   it('sets issuer from parameter', () => {
-    const vc = assembleVC(data, ISSUER);
-    expect(vc.issuer).toBe(ISSUER);
+    expect(assembleVC(data, ISSUER).issuer).toBe(ISSUER);
   });
 
-  it('maps issueDate to validFrom in ISO format', () => {
-    const vc = assembleVC(data, ISSUER);
-    expect(vc.validFrom).toBe('2026-06-24T00:00:00Z');
+  it('maps issuanceDate to validFrom', () => {
+    expect(assembleVC(data, ISSUER).validFrom).toBe('2026-07-03T00:00:00Z');
   });
 
-  it('maps expiryDate to validUntil in ISO format', () => {
-    const vc = assembleVC(data, ISSUER);
-    expect(vc.validUntil).toBe('2027-06-30T00:00:00Z');
+  it('maps expiryDate to validUntil', () => {
+    expect(assembleVC(data, ISSUER).validUntil).toBe('2027-07-02T00:00:00Z');
   });
 
-  it('nests bank fields under issuingBank', () => {
-    const vc = assembleVC(data, ISSUER);
-    expect(vc.credentialSubject.issuingBank).toEqual({
-      name: 'Global Trade Bank Ltd',
-      swift: 'GTBKSGSGXXX',
+  it('includes guaranteeNumber in credentialSubject', () => {
+    expect(assembleVC(data, ISSUER).credentialSubject.guaranteeNumber).toBe('BG-UOB-2026-00123');
+  });
+
+  it('nests bank with name, registrationNumber, address', () => {
+    expect(assembleVC(data, ISSUER).credentialSubject.bank).toEqual({
+      name: 'United Overseas Bank Limited',
+      registrationNumber: '193500026Z',
+      address: '80 Raffles Place, UOB Plaza, Singapore 048624',
     });
   });
 
-  it('nests applicant fields under applicant', () => {
-    const vc = assembleVC(data, ISSUER);
-    expect(vc.credentialSubject.applicant).toEqual({
-      name: 'Apex Builders Pte Ltd',
-      address: '10 Marina Boulevard, Singapore 018983',
+  it('nests guaranteedSum with currency, figures, words', () => {
+    expect(assembleVC(data, ISSUER).credentialSubject.guaranteedSum).toEqual({
+      currency: 'SGD',
+      figures: 750000,
+      words: 'Seven Hundred and Fifty Thousand',
     });
   });
 
-  it('sets governingRules to URDG758', () => {
-    const vc = assembleVC(data, ISSUER);
-    expect(vc.credentialSubject.governingRules).toBe('URDG758');
-  });
-
-  it('does not include a proof field', () => {
-    const vc = assembleVC(data, ISSUER) as Record<string, unknown>;
-    expect(vc['proof']).toBeUndefined();
-  });
-
-  it('does not include credentialStatus', () => {
-    const vc = assembleVC(data, ISSUER) as Record<string, unknown>;
-    expect(vc['credentialStatus']).toBeUndefined();
+  it('injects signatory.signatureImage as a non-empty data URI', () => {
+    const sig = assembleVC(data, ISSUER).credentialSubject.signatory.signatureImage;
+    expect(sig).toMatch(/^data:image\/svg\+xml;base64,/);
   });
 
   it('uses custom rendererUrl when provided', () => {
-    const vc = assembleVC(data, ISSUER, 'https://custom.example.com/renderer');
-    expect(vc.renderMethod[0].id).toBe('https://custom.example.com/renderer');
+    expect(assembleVC(data, ISSUER, 'https://custom.example.com/renderer').renderMethod[0].id).toBe(
+      'https://custom.example.com/renderer',
+    );
+  });
+
+  it('does not include a proof field', () => {
+    expect((assembleVC(data, ISSUER) as Record<string, unknown>)['proof']).toBeUndefined();
   });
 });
