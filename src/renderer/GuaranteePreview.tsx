@@ -1,4 +1,3 @@
-import uobLogo from '../assets/uob-logo.png';
 
 interface CredentialSubject {
   guaranteeNumber: string;
@@ -35,7 +34,10 @@ export default function GuaranteePreview({ subject, issuerDid }: Props) {
       <div className="max-w-3xl mx-auto px-12 py-10">
         {/* UOB logo — top right per UOB letter convention */}
         <div className="flex justify-end mb-8">
-          <img src={uobLogo} alt="United Overseas Bank" className="h-12" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 56" className="h-12" aria-label="United Overseas Bank">
+            <text x="4" y="38" fontFamily="Arial Black, Arial, sans-serif" fontWeight="900" fontSize="40" fill="#E31837" letterSpacing="-1">UOB</text>
+            <text x="5" y="52" fontFamily="Arial, sans-serif" fontWeight="400" fontSize="10" fill="#1a1a2e" letterSpacing="0.5">United Overseas Bank</text>
+          </svg>
         </div>
 
         <p className="mb-6 font-semibold">Guarantee No.: {subject.guaranteeNumber}</p>
