@@ -1,4 +1,4 @@
-# YORK credentialSubject Schema
+# YOLK credentialSubject Schema
 
 This file documents every field in `credentialSubject` for the UOB Banker's Guarantee VC.
 It is the canonical reference for the Excel front-end re-templating pass.

@@ -97,7 +97,7 @@ export default function App() {
                 ← Back
               </button>
             )}
-            <span className="font-bold tracking-wide">YORK — Your Online LetterOfGuarantee Kit</span>
+            <span className="font-bold tracking-wide">YOLK — Your Online LetterOfGuarantee Kit</span>
           </div>
           {ISSUER_DID ? (
             <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-mono">✓ {ISSUER_DID}</span>
@@ -108,7 +108,7 @@ export default function App() {
           )}
         </div>
         <p className="text-xs text-indigo-200 mt-0.5">
-          Built on TradeTrust — decentralised and open-source, so YORK can be deployed inside a bank&apos;s own
+          Built on TradeTrust — decentralised and open-source, so YOLK can be deployed inside a bank&apos;s own
           environment beyond Phase 1.
         </p>
       </header>

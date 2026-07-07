@@ -1,4 +1,4 @@
-# YORK — Your Online LetterOfGuarantee Kit
+# YOLK — Your Online LetterOfGuarantee Kit
 
 A working demonstration of an **electronic Banker's Guarantee (eBG)** using [W3C Verifiable Credentials 2.0](https://www.w3.org/TR/vc-data-model-2.0/) and the [TradeTrust](https://www.tradetrust.io/) open framework. Built to support IMDA's Phase 1 conversation with UOB on digitising the Banker's Guarantee workflow.
 
