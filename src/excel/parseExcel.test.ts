@@ -4,25 +4,21 @@ import { parseExcel, FIELD_NAMES } from './parseExcel';
 
 // Builds an in-memory .xlsx File with named ranges pointing to column A cells
 function makeFile(values: Record<string, unknown>, omit: string[] = []): File {
-  const wb: XLSX.WorkBook = {
-    SheetNames: ['Guarantee Data'],
-    Sheets: {},
-    Workbook: { Names: [], WBProps: {} as XLSX.WBProps },
-  };
-
+  const wb = XLSX.utils.book_new();
   const entries = Object.entries(values).filter(([k]) => !omit.includes(k));
   const ws: XLSX.WorkSheet = { '!ref': `A1:A${entries.length}` };
   entries.forEach(([, v], i) => {
     ws[`A${i + 1}`] = { v, t: typeof v === 'number' ? 'n' : 's' };
   });
-  wb.Sheets['Guarantee Data'] = ws;
+  XLSX.utils.book_append_sheet(wb, ws, 'Guarantee Data');
 
+  if (!wb.Workbook) wb.Workbook = { Names: [] };
   entries.forEach(([name], i) => {
     wb.Workbook!.Names!.push({ Name: name, Ref: `'Guarantee Data'!$A$${i + 1}` });
   });
 
   const buf = XLSX.write(wb, { type: 'array', bookType: 'xlsx' }) as Uint8Array;
-  return new File([buf], 'test.xlsx', {
+  return new File([buf as unknown as BlobPart], 'test.xlsx', {
     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   });
 }
