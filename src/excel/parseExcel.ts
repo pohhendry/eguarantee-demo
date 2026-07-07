@@ -36,7 +36,7 @@ export async function parseExcel(file: File): Promise<RawFields> {
   const buf = await readFileAsArrayBuffer(file);
   let wb: XLSX.WorkBook;
   try {
-    wb = XLSX.read(new Uint8Array(buf), { type: 'array' });
+    wb = XLSX.read(new Uint8Array(buf), { type: 'array', cellDates: true });
   } catch {
     throw new Error('Failed to read file — make sure it is a valid .xlsx file.');
   }

@@ -40,6 +40,8 @@ export default function App() {
   const handleValidChange = useCallback((isValid: boolean, data: GuaranteeFormData) => {
     if (isValid) {
       setLiveVC(assembleVC(data, ISSUER_DID || 'did:web:pending-setup', RENDERER_URL));
+    } else {
+      setLiveVC(null);
     }
   }, []);
 

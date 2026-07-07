@@ -21,17 +21,18 @@ export default function ExcelUpload({ onSubmit, onValidChange, isSubmitting }: P
 
   async function processFile(file: File) {
     setState({ status: 'idle' });
+    setFileName(file.name);
 
     if (!file.name.endsWith('.xlsx')) {
+      onValidChange(false, {} as GuaranteeFormData);
       setState({ status: 'error', errors: ['File must be a .xlsx file.'] });
       return;
     }
     if (file.size > 1_048_576) {
+      onValidChange(false, {} as GuaranteeFormData);
       setState({ status: 'error', errors: ['File must be under 1 MB.'] });
       return;
     }
-
-    setFileName(file.name);
 
     try {
       const raw = await parseExcel(file);
@@ -40,6 +41,7 @@ export default function ExcelUpload({ onSubmit, onValidChange, isSubmitting }: P
 
       if (!result.success) {
         const errors = result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`);
+        onValidChange(false, {} as GuaranteeFormData);
         setState({ status: 'error', errors });
         return;
       }
@@ -48,6 +50,7 @@ export default function ExcelUpload({ onSubmit, onValidChange, isSubmitting }: P
       onValidChange(true, result.data);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to parse file.';
+      onValidChange(false, {} as GuaranteeFormData);
       setState({ status: 'error', errors: [msg] });
     }
   }

@@ -10,6 +10,11 @@ function toDateStr(v: unknown): string {
     // format as YYYY-MM-DD in UTC to avoid timezone shifts
     return v.toISOString().slice(0, 10);
   }
+  if (typeof v === 'number') {
+    // Excel serial date: days since 1899-12-30
+    const d = new Date(Math.round((v - 25569) * 86400 * 1000));
+    return d.toISOString().slice(0, 10);
+  }
   return toStr(v);
 }
 
